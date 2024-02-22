@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background: #fc8e51;
+  background: -webkit-linear-gradient(to left, #fc8e51, #fa61f9);
+  background: linear-gradient(to left, #fc8e51, #fa61f9);
+  height: 100vh;
+  @apply flex justify-center items-center;
+}
+
+.ant-tabs-ink-bar {
+  display: none;
+}
+
+.ant-tabs-tab-btn:hover i {
+  color: #985fd6;
+}
+
+.ant-tabs-tab-active i {
+  color: #985fd6;
+}
