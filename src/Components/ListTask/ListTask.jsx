@@ -1,7 +1,13 @@
-import React from 'react';
+import Task from '../Task/Task';
 
-const ListTask = () => {
-  return <div>ListTask</div>;
+const ListTask = ({ arrTask, handleDeleteTask }) => {
+  return (
+    <div>
+      {arrTask.map((task, index) => {
+        return <Task deleteTask={handleDeleteTask} task={task} key={index} />;
+      })}
+    </div>
+  );
 };
 
 export default ListTask;

@@ -4,10 +4,52 @@ import { useState } from 'react';
 import FormCreateTask from './Components/FormCreateTask/FormCreateTask';
 import ListTask from './Components/ListTask/ListTask';
 import ListTaskDone from './Components/ListTaskDone/ListTaskDone';
+import { useEffect } from 'react';
+import { getLocalStorage, saveLocalStorage } from './util/util';
+import { Input } from 'antd';
 
 function App() {
   const [arrTask, setArrTask] = useState([]);
+  const [filterTask, setFilterTask] = useState([]);
+  const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAddTask = (value) => {
+    const newArrTask = [...arrTask, value];
+    setArrTask(newArrTask);
+    saveLocalStorage('arrTask', newArrTask);
+  };
+
+  const handleDeleteTask = (key) => {
+    const newArrTask = arrTask.filter((task) => task.key !== key);
+    setArrTask(newArrTask);
+    saveLocalStorage('arrTask', newArrTask);
+  };
+
+  useEffect(() => {
+    // lọc từ mảng arrTask ra mảng filterTask
+    const newFilterTask = arrTask.filter((task) => {
+      console.log(task);
+      return task.title.toLowerCase().includes(search.toLowerCase());
+    });
+    setFilterTask(newFilterTask);
+  }, [search, arrTask]);
+
+  useEffect(() => {
+    const arrTask = getLocalStorage('arrTask');
+    if (arrTask) {
+      setArrTask(arrTask);
+    }
+  }, []);
+
   const items = [
     {
       key: '1',
@@ -16,7 +58,12 @@ function App() {
           <i className="fa-regular fa-list"></i>
         </div>
       ),
-      children: <ListTask />,
+      children: (
+        <ListTask
+          handleDeleteTask={handleDeleteTask}
+          arrTask={filterTask.filter((task) => !task.status)}
+        />
+      ),
     },
     {
       key: '2',
@@ -25,23 +72,32 @@ function App() {
           <i className="fa-regular fa-clipboard-check"></i>
         </div>
       ),
-      children: <ListTaskDone />,
+      children: (
+        <ListTaskDone arrTaskDone={filterTask.filter((task) => !task.status)} />
+      ),
     },
   ];
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
   return (
     <>
       <div className="list_task bg-white pt-4 pb-10 rounded-md relative px-5">
+        <div>
+          <label htmlFor="">Tìm kiếm task</label>
+          <Input
+            className="mt-2"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            // addonAfter={
+            //   <SelectCustom
+            //     options={[
+            //       { value: 'title', label: 'Title' },
+            //       { value: 'tag', label: 'Tag' },
+            //       { value: 'priority', label: 'Priority' },
+            //     ]}
+            //   />
+            // }
+          />
+        </div>
         <Tabs defaultActiveKey="1" items={items} />
         <button
           onClick={showModal}
@@ -53,11 +109,10 @@ function App() {
       <Modal
         title="Tạo task"
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
       >
-        <FormCreateTask arrTask={arrTask} />
+        <FormCreateTask arrTask={arrTask} handleAddTask={handleAddTask} />
       </Modal>
     </>
   );

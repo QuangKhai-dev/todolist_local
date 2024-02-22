@@ -2,7 +2,8 @@ import { useFormik } from 'formik';
 import InputCustom from '../Input/Input';
 import SelectCustom from '../Select/Select';
 import * as Yup from 'yup';
-const FormCreateTask = () => {
+import { generateRandomId } from '../../util/util';
+const FormCreateTask = ({ handleAddTask }) => {
   const {
     handleChange,
     handleBlur,
@@ -19,7 +20,14 @@ const FormCreateTask = () => {
       tag: '',
     },
     onSubmit: (values) => {
-      console.log(values);
+      const newValue = {
+        ...values,
+        status: false,
+        key: generateRandomId(),
+        createdAt: new Date().toLocaleDateString(),
+        updatedAt: new Date().toLocaleDateString(),
+      };
+      handleAddTask(newValue);
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Vui lòng nhập tên task'),
@@ -56,10 +64,10 @@ const FormCreateTask = () => {
             label="Priority"
             options={[
               { value: '', label: 'Chọn Priority' },
-              { value: 'jack', label: 'High' },
-              { value: 'lucy', label: 'Low' },
-              { value: 'Yiminghe', label: 'Medium' },
-              { value: 'disabled', label: 'Critical' },
+              { value: 'High', label: 'High' },
+              { value: 'Low', label: 'Low' },
+              { value: 'Medium', label: 'Medium' },
+              { value: 'Critical', label: 'Critical' },
             ]}
             onChange={(value) => {
               setFieldValue('priority', value);
@@ -74,8 +82,8 @@ const FormCreateTask = () => {
             label="Tags"
             options={[
               { value: '', label: 'Chọn Tag' },
-              { value: 'jack', label: 'Công việc' },
-              { value: 'lucy', label: 'Cá nhân' },
+              { value: 'Công việc', label: 'Công việc' },
+              { value: 'Cá nhân', label: 'Cá nhân' },
             ]}
             onChange={(value) => {
               setFieldValue('tag', value);
