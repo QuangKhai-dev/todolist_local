@@ -34,6 +34,17 @@ function App() {
     saveLocalStorage('arrTask', newArrTask);
   };
 
+  const checkTaskDone = (key) => {
+    const newTask = arrTask.map((task) => {
+      if (task.key === key) {
+        return { ...task, status: true };
+      }
+      return task;
+    });
+    setArrTask(newTask);
+    saveLocalStorage('arrTask', newTask);
+  };
+
   useEffect(() => {
     // lọc từ mảng arrTask ra mảng filterTask
     const newFilterTask = arrTask.filter((task) => {
@@ -61,6 +72,7 @@ function App() {
       children: (
         <ListTask
           handleDeleteTask={handleDeleteTask}
+          checkTaskDone={checkTaskDone}
           arrTask={filterTask.filter((task) => !task.status)}
         />
       ),

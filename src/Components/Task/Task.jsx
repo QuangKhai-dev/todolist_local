@@ -1,4 +1,4 @@
-const Task = ({ task, deleteTask }) => {
+const Task = ({ task, deleteTask, checkTaskDone }) => {
   const renderColorPriority = () => {
     if (task.priority === 'High') {
       return 'bg-red-600';
@@ -39,7 +39,12 @@ const Task = ({ task, deleteTask }) => {
         <button className="text-yellow-600 text-xl">
           <i className="fa-regular fa-pen-to-square"></i>
         </button>
-        <button className="text-green-500 text-xl">
+        <button
+          onClick={() => {
+            checkTaskDone(task.key);
+          }}
+          className="text-green-500 text-xl"
+        >
           <i className="fa-sharp fa-regular fa-circle-check"></i>
         </button>
       </div>
